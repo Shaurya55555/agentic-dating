@@ -57,6 +57,8 @@ for (const a of ids) {
 const dates = {};
 for (const key of pairs) {
   const [a, b] = key.split("__");
+  // ONLY_CACHED=1 finishes with the dates already run (used when the free LLM quota is spent).
+  if (process.env.ONLY_CACHED && !fs.existsSync(path.join(cacheDir, "date." + key + ".json"))) continue;
   dates[key] = await cached("date." + key, () => runDate(profiles[a], profiles[b], 6))();
   console.log("date", profiles[a].name, "x", profiles[b].name, dates[key].score);
 }
